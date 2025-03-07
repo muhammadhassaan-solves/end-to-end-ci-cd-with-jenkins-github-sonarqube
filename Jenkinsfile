@@ -1,21 +1,23 @@
 pipeline {
-    // Prevent Jenkins from automatically checking out code on the host
     options {
+        // Disable Jenkins' default checkout
         skipDefaultCheckout(true)
     }
-    agent none  // We'll define the agent in each stage
+    agent none
 
     stages {
         stage('Checkout Code in Docker') {
             agent {
                 docker {
                     image 'maven:3.8.6-openjdk-11'
-                    // Run as root to avoid file permission issues
                     args '-u root'
                 }
             }
             steps {
-                // Clone your repo INSIDE the container
+                // 1. Remove everything in the workspace
+                sh 'rm -rf ./* .git*'
+
+                // 2. Clone your repo INSIDE the container
                 sh 'git clone -b main https://github.com/muhammadhassaan-solves/CI-CD-Pipeline-Optimization-using-Jenkins-and-MLflow.git .'
             }
         }
@@ -35,7 +37,6 @@ pipeline {
         }
 
         stage('Deploy from Jenkins Host') {
-            // We'll deploy on the host to access the SSH key via Jenkins Credentials
             agent any
             steps {
                 withCredentials([file(credentialsId: 'EC2_SSH_KEY', variable: 'SSH_KEY')]) {
