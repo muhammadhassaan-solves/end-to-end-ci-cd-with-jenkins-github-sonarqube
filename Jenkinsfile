@@ -1,12 +1,10 @@
 pipeline {
-    // We do NOT want Jenkins automatically checking out code
     agent none
     options {
-        skipDefaultCheckout(true)  // Disable default SCM checkout
+        skipDefaultCheckout(true)
     }
 
     stages {
-        // (Optional) Clean workspace permissions to avoid AccessDenied
         stage('Fix Permissions') {
             agent any
             steps {
@@ -30,7 +28,7 @@ pipeline {
                 sh '''
                     echo "Cleaning workspace..."
                     rm -rf ./* .git*
-
+                    
                     echo "Cloning repository..."
                     git clone -b main https://github.com/muhammadhassaan-solves/CI-CD-Pipeline-Optimization-using-Jenkins-and-MLflow.git .
                 '''
@@ -46,7 +44,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Measure build time in seconds
                     def startTime = System.currentTimeMillis()
                     
                     sh 'mvn clean compile'
@@ -55,15 +52,13 @@ pipeline {
                     
                     def endTime = System.currentTimeMillis()
                     def buildTime = (endTime - startTime) / 1000
-
-                    // Save build time to a file
+                    
                     sh "echo ${buildTime} > build_time.txt"
-
-                    // Read build time from file into a Groovy variable
-                    def buildTimeVal = sh(script: 'cat build_time.txt', returnStdout: true).trim()
-
-                    // Log build time to MLflow (runs on Jenkins host)
-                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_build_time.py ${buildTimeVal}"
+                    
+                    sh '''
+                        source /var/lib/jenkins/mlflow_venv/bin/activate
+                        python3 /var/lib/jenkins/log_build_time.py $(cat build_time.txt)
+                    '''
                 }
             }
         }
@@ -72,9 +67,8 @@ pipeline {
             agent any
             steps {
                 script {
-                    // Measure deploy time in seconds
                     def deployStart = System.currentTimeMillis()
-
+                    
                     withCredentials([file(credentialsId: '4c7e72da-f3f3-40a6-ab52-8650693969fa', variable: 'SSH_KEY')]) {
                         sh '''
                             echo "Deploying to EC2..."
@@ -83,18 +77,16 @@ pipeline {
                             ssh -i $SSH_KEY ubuntu@44.202.146.87 "nohup java -jar cicd-jenkins-mlflow-1.0-SNAPSHOT.jar > output.log 2>&1 &"
                         '''
                     }
-
+                    
                     def deployEnd = System.currentTimeMillis()
                     def deployTime = (deployEnd - deployStart) / 1000
-
-                    // Save deploy time to a file
+                    
                     sh "echo ${deployTime} > deploy_time.txt"
-
-                    // Read deploy time from file into a Groovy variable
-                    def deployTimeVal = sh(script: 'cat deploy_time.txt', returnStdout: true).trim()
-
-                    // Log deploy time to MLflow (runs on Jenkins host)
-                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_deploy_time.py ${deployTimeVal}"
+                    
+                    sh '''
+                        source /var/lib/jenkins/mlflow_venv/bin/activate
+                        python3 /var/lib/jenkins/log_deploy_time.py $(cat deploy_time.txt)
+                    '''
                 }
             }
         }
