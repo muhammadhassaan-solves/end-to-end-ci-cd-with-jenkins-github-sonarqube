@@ -1,55 +1,51 @@
 pipeline {
-    agent none
+    agent any
+
+    environment {
+        REPO_URL = 'https://github.com/muhammadhassaan-solves/CI-CD-Pipeline-Optimization-using-Jenkins-and-MLflow'
+        BRANCH = 'main'
+        IMAGE_NAME = 'maven:3.8.6-openjdk-11'
+        DEPLOY_USER = 'ubuntu'
+        DEPLOY_HOST = '44.202.146.87'
+        JAR_FILE = 'cicd-jenkins-mlflow-1.0-SNAPSHOT.jar'
+    }
 
     stages {
-        stage('Build & Test in Docker') {
-            agent {
-                docker {
-                    // Use Maven + OpenJDK 11 image
-                    image 'maven:3.8.6-openjdk-11'
-                    // Run as root to avoid file permission issues when cleaning target/
-                    args '-u root'
-                }
-            }
+        stage('Checkout Code') {
             steps {
-                // Jenkins automatically checks out your code on the host
-                // Then bind-mounts the workspace into the container
-                // Now run maven commands as root user in the container
-                sh 'mvn clean compile'
-                sh 'mvn test'
-                sh 'mvn package'
+                git branch: "${BRANCH}", url: "${REPO_URL}"
             }
         }
 
-        stage('Run in Docker') {
-            agent {
-                docker {
-                    image 'maven:3.8.6-openjdk-11'
-                    args '-u root'
+        stage('Build & Test in Docker') {
+            steps {
+                script {
+                    docker.image("${IMAGE_NAME}").inside {
+                        sh 'mvn clean compile'
+                    }
                 }
             }
+        }
+
+        stage('Package Artifact') {
             steps {
-                // Run the newly built JAR in the container
-                // The ampersand (&) runs it in the background
-                sh 'java -jar target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar &'
+                script {
+                    docker.image("${IMAGE_NAME}").inside {
+                        sh 'mvn package'
+                    }
+                }
             }
         }
 
         stage('Deploy from Jenkins Host') {
-            // Use the Jenkins host, which has the SSH key (new.pem)
-            agent any
             steps {
-                echo 'Deploying to EC2 from Jenkins host...'
-                sh '''
-                    # Make sure your key is in the workspace, or in a known path on Jenkins
-                    chmod 400 new.pem
-
-                    # Copy the JAR file to EC2
-                    scp -i new.pem target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar ubuntu@44.202.146.87:~
-
-                    # Run the JAR in the background on EC2
-                    ssh -i new.pem ubuntu@44.202.146.87 "nohup java -jar cicd-jenkins-mlflow-1.0-SNAPSHOT.jar > output.log 2>&1 &"
-                '''
+                withCredentials([file(credentialsId: 'EC2_SSH_KEY', variable: 'SSH_KEY')]) {
+                    sh '''
+                        chmod 400 $SSH_KEY
+                        scp -i $SSH_KEY target/$JAR_FILE $DEPLOY_USER@$DEPLOY_HOST:~
+                        ssh -i $SSH_KEY $DEPLOY_USER@$DEPLOY_HOST "nohup java -jar $JAR_FILE > output.log 2>&1 &"
+                    '''
+                }
             }
         }
     }
