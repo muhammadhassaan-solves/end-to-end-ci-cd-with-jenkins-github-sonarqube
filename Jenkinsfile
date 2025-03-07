@@ -32,8 +32,8 @@ pipeline {
                 sh 'mvn test'
                 sh 'mvn package'
                 sh 'end_time=$(date +%s)'
-                sh 'echo $(($end_time - $start_time)) > build_time.txt'
-                sh 'python3 log_build_time.py'
+                sh 'build_time=$(($end_time - $start_time)) && echo $build_time | tee build_time.txt'
+                sh 'python3 log_build_time.py $(cat build_time.txt)'  // Pass build time as argument
             }
         }
 
@@ -48,8 +48,8 @@ pipeline {
                         scp -i $SSH_KEY target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar ubuntu@44.202.146.87:~
                         ssh -i $SSH_KEY ubuntu@44.202.146.87 "nohup java -jar cicd-jenkins-mlflow-1.0-SNAPSHOT.jar > output.log 2>&1 &"
                         end_time=$(date +%s)
-                        echo $(($end_time - $start_time)) > deploy_time.txt
-                        python3 log_deploy_time.py
+                        deploy_time=$(($end_time - $start_time)) && echo $deploy_time | tee deploy_time.txt
+                        python3 log_deploy_time.py $(cat deploy_time.txt)  // Pass deploy time as argument
                     '''
                 }
             }
