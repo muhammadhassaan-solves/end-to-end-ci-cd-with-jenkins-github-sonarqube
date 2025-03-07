@@ -39,7 +39,7 @@ pipeline {
         stage('Deploy from Jenkins Host') {
             agent any
             steps {
-                withCredentials([file(credentialsId: '068127c9-00b6-4ad0-83de-1564a1fc6193', variable: 'SSH_KEY')]) {
+                withCredentials([file(credentialsId: '4c7e72da-f3f3-40a6-ab52-8650693969fa', variable: 'SSH_KEY')]) {
                     sh '''
                         echo "Deploying to EC2..."
                         chmod 400 $SSH_KEY
