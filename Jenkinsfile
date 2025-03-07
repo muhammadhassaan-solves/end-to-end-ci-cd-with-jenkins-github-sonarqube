@@ -1,11 +1,25 @@
 pipeline {
     agent {
+        // Use Docker-in-Docker image
         docker {
-            image 'maven:3.8.6-openjdk-11'
+            image 'docker:20.10.16-dind'
+            // Privileged mode + mount Docker socket
+            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
+    
+    stages {
+        stage('Install Tools') {
+            steps {
+                // The docker:dind image is Alpine-based and doesn't include Java/Maven.
+                // So we install them here.
+                sh '''
+                  apk update
+                  apk add openjdk11 maven
+                '''
+            }
+        }
 
-    stages {  
         stage('Build') {
             steps {
                 sh 'mvn clean compile'
@@ -26,6 +40,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
+                // Now we can run Docker commands inside the container
                 sh 'docker build -t my-java-app .'
             }
         }
@@ -45,6 +60,7 @@ pipeline {
 
     post {
         always {
+            // Clean up container
             sh 'docker stop java_app || true'
             sh 'docker rm java_app || true'
         }
