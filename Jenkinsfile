@@ -28,7 +28,7 @@ pipeline {
                 sh '''
                     echo "Cleaning workspace..."
                     rm -rf ./* .git*
-                    
+
                     echo "Cloning repository..."
                     git clone -b main https://github.com/muhammadhassaan-solves/CI-CD-Pipeline-Optimization-using-Jenkins-and-MLflow.git .
                 '''
@@ -44,21 +44,27 @@ pipeline {
             }
             steps {
                 script {
+                    // Measure build time
                     def startTime = System.currentTimeMillis()
-                    
                     sh 'mvn clean compile'
                     sh 'mvn test'
                     sh 'mvn package'
-                    
                     def endTime = System.currentTimeMillis()
                     def buildTime = (endTime - startTime) / 1000
-                    
+
+                    // Write build time to file
                     sh "echo ${buildTime} > build_time.txt"
-                    
-                    sh '''
-                        source /var/lib/jenkins/mlflow_venv/bin/activate
-                        python3 /var/lib/jenkins/log_build_time.py $(cat build_time.txt)
-                    '''
+
+                    // Read build_time.txt into a Groovy variable
+                    def buildTimeVal = sh(script: 'cat build_time.txt', returnStdout: true).trim()
+
+                    // Use bash -c to source your venv and run the script
+                    sh """
+                        bash -c \"
+                        source /var/lib/jenkins/mlflow_venv/bin/activate &&
+                        python3 /var/lib/jenkins/log_build_time.py ${buildTimeVal}
+                        \"
+                    """
                 }
             }
         }
@@ -67,8 +73,9 @@ pipeline {
             agent any
             steps {
                 script {
+                    // Measure deploy time
                     def deployStart = System.currentTimeMillis()
-                    
+
                     withCredentials([file(credentialsId: '4c7e72da-f3f3-40a6-ab52-8650693969fa', variable: 'SSH_KEY')]) {
                         sh '''
                             echo "Deploying to EC2..."
@@ -77,16 +84,23 @@ pipeline {
                             ssh -i $SSH_KEY ubuntu@44.202.146.87 "nohup java -jar cicd-jenkins-mlflow-1.0-SNAPSHOT.jar > output.log 2>&1 &"
                         '''
                     }
-                    
+
                     def deployEnd = System.currentTimeMillis()
                     def deployTime = (deployEnd - deployStart) / 1000
-                    
+
+                    // Write deploy time to file
                     sh "echo ${deployTime} > deploy_time.txt"
-                    
-                    sh '''
-                        source /var/lib/jenkins/mlflow_venv/bin/activate
-                        python3 /var/lib/jenkins/log_deploy_time.py $(cat deploy_time.txt)
-                    '''
+
+                    // Read deploy_time.txt into a Groovy variable
+                    def deployTimeVal = sh(script: 'cat deploy_time.txt', returnStdout: true).trim()
+
+                    // Again, use bash -c to source your venv and run the script
+                    sh """
+                        bash -c \"
+                        source /var/lib/jenkins/mlflow_venv/bin/activate &&
+                        python3 /var/lib/jenkins/log_deploy_time.py ${deployTimeVal}
+                        \"
+                    """
                 }
             }
         }
