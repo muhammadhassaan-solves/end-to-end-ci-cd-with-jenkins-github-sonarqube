@@ -59,8 +59,11 @@ pipeline {
                     // Save build time to a file
                     sh "echo ${buildTime} > build_time.txt"
 
+                    // Read build time from file into a Groovy variable
+                    def buildTimeVal = sh(script: 'cat build_time.txt', returnStdout: true).trim()
+
                     // Log build time to MLflow (runs on Jenkins host)
-                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_build_time.py \\$(cat build_time.txt)"
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_build_time.py ${buildTimeVal}"
                 }
             }
         }
@@ -87,8 +90,11 @@ pipeline {
                     // Save deploy time to a file
                     sh "echo ${deployTime} > deploy_time.txt"
 
+                    // Read deploy time from file into a Groovy variable
+                    def deployTimeVal = sh(script: 'cat deploy_time.txt', returnStdout: true).trim()
+
                     // Log deploy time to MLflow (runs on Jenkins host)
-                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_deploy_time.py \\$(cat deploy_time.txt)"
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_deploy_time.py ${deployTimeVal}"
                 }
             }
         }
