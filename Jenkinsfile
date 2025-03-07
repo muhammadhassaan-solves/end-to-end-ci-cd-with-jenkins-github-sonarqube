@@ -1,25 +1,11 @@
 pipeline {
     agent {
-        // Use Docker-in-Docker image
         docker {
-            image 'docker:20.10.16-dind'
-            // Privileged mode + mount Docker socket
-            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+            image 'maven:3.8.6-openjdk-11'
         }
     }
-    
-    stages {
-        stage('Install Tools') {
-            steps {
-                // The docker:dind image is Alpine-based and doesn't include Java/Maven.
-                // So we install them here.
-                sh '''
-                  apk update
-                  apk add openjdk11 maven
-                '''
-            }
-        }
 
+    stages {  
         stage('Build') {
             steps {
                 sh 'mvn clean compile'
@@ -38,31 +24,20 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Run') {
             steps {
-                // Now we can run Docker commands inside the container
-                sh 'docker build -t my-java-app .'
-            }
-        }
-
-        stage('Run Docker Container') {
-            steps {
-                sh 'docker run -d -p 8080:8080 --name java_app my-java-app'
+                sh 'java -jar target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar &'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Application is running at http://localhost:8080/HelloWorld"
+                echo "Deploying application to EC2..."
+                sh '''
+                    scp -i new.pem target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar ubuntu@44.202.146.87:~
+                    ssh -i new.pem ubuntu@44.202.146.87 "nohup java -jar cicd-jenkins-mlflow-1.0-SNAPSHOT.jar > output.log 2>&1 &"
+                '''
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean up container
-            sh 'docker stop java_app || true'
-            sh 'docker rm java_app || true'
         }
     }
 }
