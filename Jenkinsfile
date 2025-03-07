@@ -1,12 +1,11 @@
 pipeline {
     agent none
     options {
-        skipDefaultCheckout(true)  // Disable Jenkins' default SCM checkout
+        skipDefaultCheckout(true)  // No default SCM checkout
     }
 
     stages {
         stage('Fix Permissions') {
-            // (Optional) If you have permission issues in your workspace
             agent any
             steps {
                 sh '''
@@ -47,21 +46,19 @@ pipeline {
                 script {
                     // Measure build time
                     def startTime = System.currentTimeMillis()
-
                     sh 'mvn clean compile'
                     sh 'mvn test'
                     sh 'mvn package'
-
                     def endTime = System.currentTimeMillis()
                     def buildTime = (endTime - startTime) / 1000
 
-                    // Save build time to a file
+                    // Write build time to a file
                     sh "echo ${buildTime} > build_time.txt"
 
-                    // Read build_time.txt into a Groovy variable
+                    // Read from file into a variable
                     def buildTimeVal = sh(script: 'cat build_time.txt', returnStdout: true).trim()
 
-                    // Log build time to MLflow (on Jenkins host)
+                    // Log build time to MLflow
                     sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_build_time.py ${buildTimeVal}"
                 }
             }
@@ -71,7 +68,6 @@ pipeline {
             agent any
             steps {
                 script {
-                    // Measure deploy time
                     def deployStart = System.currentTimeMillis()
 
                     withCredentials([file(credentialsId: '4c7e72da-f3f3-40a6-ab52-8650693969fa', variable: 'SSH_KEY')]) {
@@ -86,13 +82,13 @@ pipeline {
                     def deployEnd = System.currentTimeMillis()
                     def deployTime = (deployEnd - deployStart) / 1000
 
-                    // Save deploy time to a file
+                    // Write deploy time to a file
                     sh "echo ${deployTime} > deploy_time.txt"
 
-                    // Read deploy_time.txt into a Groovy variable
+                    // Read from file into a variable
                     def deployTimeVal = sh(script: 'cat deploy_time.txt', returnStdout: true).trim()
 
-                    // Log deploy time to MLflow (on Jenkins host)
+                    // Log deploy time to MLflow
                     sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_deploy_time.py ${deployTimeVal}"
                 }
             }
