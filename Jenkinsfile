@@ -60,7 +60,7 @@ pipeline {
                     sh "echo ${buildTime} > build_time.txt"
 
                     // Log build time to MLflow (runs on Jenkins host)
-                    sh "/home/jenkins/mlflow_venv/bin/python3 log_build_time.py ${buildTime}"
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_build_time.py $(cat build_time.txt)"
                 }
             }
         }
@@ -88,7 +88,7 @@ pipeline {
                     sh "echo ${deployTime} > deploy_time.txt"
 
                     // Log deploy time to MLflow (runs on Jenkins host)
-                    sh "/home/jenkins/mlflow_venv/bin/python3 log_deploy_time.py ${deployTime}"
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_deploy_time.py $(cat deploy_time.txt)"
                 }
             }
         }
