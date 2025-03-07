@@ -24,17 +24,29 @@ pipeline {
             }
         }
 
-        stage('Run') {
+        stage('Build Docker Image') {
             steps {
-                sh 'java -jar target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar &'
+                sh 'docker build -t my-java-app .'
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                sh 'docker run -d -p 8080:8080 --name java_app my-java-app'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploying application..."
-                // Add your deployment script/command here
+                echo "Application is running at http://localhost:8080/HelloWorld"
             }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker stop java_app || true'
+            sh 'docker rm java_app || true'
         }
     }
 }
