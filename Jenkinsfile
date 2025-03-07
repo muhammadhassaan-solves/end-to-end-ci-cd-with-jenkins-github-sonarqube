@@ -1,8 +1,9 @@
 pipeline {
+    agent none
     options {
-        skipDefaultCheckout(true)  // Avoid automatic SCM checkout
+        // Disable Jenkins' default checkout
+        skipDefaultCheckout(true)
     }
-    agent none  // We'll specify agents per stage
 
     stages {
         stage('Checkout Code in Docker') {
@@ -43,12 +44,18 @@ pipeline {
                     build_time=$((end_time - start_time))
                     echo "Build time (seconds): $build_time"
 
-                    # Write the build time to a file
+                    # Write the build time to a file in the workspace
                     echo $build_time > build_time.txt
-
-                    # Log to MLflow, passing build_time as an argument
-                    python3 log_build_time.py $(cat build_time.txt)
                 '''
+            }
+        }
+
+        stage('Log Build Time') {
+            // Runs on Jenkins host, which has MLflow installed
+            agent any
+            steps {
+                // Pass the value in build_time.txt to your Python script
+                sh 'python3 log_build_time.py $(cat build_time.txt)'
             }
         }
 
@@ -63,20 +70,25 @@ pipeline {
                         chmod 400 $SSH_KEY
                         scp -i $SSH_KEY target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar ubuntu@44.202.146.87:~
 
-                        # Optionally run the JAR in the background on EC2
+                        # (Optional) Run your app in the background on EC2
                         ssh -i $SSH_KEY ubuntu@44.202.146.87 "nohup java -jar cicd-jenkins-mlflow-1.0-SNAPSHOT.jar > output.log 2>&1 &"
 
                         end_time=$(date +%s)
                         deploy_time=$((end_time - start_time))
                         echo "Deploy time (seconds): $deploy_time"
 
-                        # Write the deploy time to a file
+                        # Write the deploy time to a file in the workspace
                         echo $deploy_time > deploy_time.txt
-
-                        # Log to MLflow, passing deploy_time as an argument
-                        python3 log_deploy_time.py $(cat deploy_time.txt)
                     '''
                 }
+            }
+        }
+
+        stage('Log Deploy Time') {
+            // Again, run on the Jenkins host to log with MLflow
+            agent any
+            steps {
+                sh 'python3 log_deploy_time.py $(cat deploy_time.txt)'
             }
         }
     }
