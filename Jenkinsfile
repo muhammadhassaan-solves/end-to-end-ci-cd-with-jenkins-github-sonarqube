@@ -1,46 +1,34 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.6-openjdk-11'
-            // run as root so we can install packages
-            args '-u root'
-        }
-    }
+    agent none
 
     stages {
-        stage('Install SSH Client') {
-            steps {
-                sh 'apt-get update && apt-get install -y openssh-client'
+        stage('Build & Test in Docker') {
+            agent {
+                docker {
+                    image 'maven:3.8.6-openjdk-11'
+                }
             }
-        }
-
-        stage('Build') {
             steps {
                 sh 'mvn clean compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
                 sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
                 sh 'mvn package'
             }
         }
 
-        stage('Run') {
+        stage('Run in Docker') {
+            agent {
+                docker {
+                    image 'maven:3.8.6-openjdk-11'
+                }
+            }
             steps {
                 sh 'java -jar target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar &'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy from Jenkins Host') {
+            agent any
             steps {
-                // Make sure new.pem is in the workspace or mounted
                 sh '''
                     chmod 400 new.pem
                     scp -i new.pem target/cicd-jenkins-mlflow-1.0-SNAPSHOT.jar ubuntu@44.202.146.87:~
