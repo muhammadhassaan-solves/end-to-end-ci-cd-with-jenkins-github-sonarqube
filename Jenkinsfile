@@ -59,7 +59,7 @@ pipeline {
                     def buildTimeVal = sh(script: 'cat build_time.txt', returnStdout: true).trim()
 
                     // Log build time to MLflow
-                    sh "/var/lib/jenkins/mlflow_venv/bin/python3.12 /var/lib/jenkins/log_build_time.py ${buildTimeVal}"
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_build_time.py ${buildTimeVal}"
                 }
             }
         }
@@ -89,7 +89,7 @@ pipeline {
                     def deployTimeVal = sh(script: 'cat deploy_time.txt', returnStdout: true).trim()
 
                     // Log deploy time to MLflow
-                    sh "/var/lib/jenkins/mlflow_venv/bin/python3.12 /var/lib/jenkins/log_deploy_time.py ${deployTimeVal}"
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_deploy_time.py ${deployTimeVal}"
                 }
             }
         }
