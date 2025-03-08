@@ -44,25 +44,22 @@ pipeline {
             }
             steps {
                 script {
-                    sh '''
-                        echo "Starting build process..."
-                        start_time=$(date +%s)
+                    // Measure build time
+                    def startTime = System.currentTimeMillis()
+                    sh 'mvn clean compile'
+                    sh 'mvn test'
+                    sh 'mvn package'
+                    def endTime = System.currentTimeMillis()
+                    def buildTime = (endTime - startTime) / 1000
 
-                        mvn clean compile
-                        mvn test
-                        mvn package
+                    // Write build time to a file
+                    sh "echo ${buildTime} > build_time.txt"
 
-                        end_time=$(date +%s)
-                        build_time=$((end_time - start_time))
-                        echo $build_time > build_time.txt
-                    '''
-
+                    // Read from file into a variable
                     def buildTimeVal = sh(script: 'cat build_time.txt', returnStdout: true).trim()
 
-                    // ✅ Use "." instead of "source"
-                    sh '''
-                        . /var/lib/jenkins/mlflow_venv/bin/activate
-                        python /var/lib/jenkins/log_build_time.py ''' + buildTimeVal
+                    // Log build time to MLflow (Direct Python Path Fix)
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_build_time.py ${buildTimeVal}"
                 }
             }
         }
@@ -71,10 +68,7 @@ pipeline {
             agent any
             steps {
                 script {
-                    sh '''
-                        echo "Starting deployment..."
-                        deploy_start=$(date +%s)
-                    '''
+                    def deployStart = System.currentTimeMillis()
 
                     withCredentials([file(credentialsId: '4c7e72da-f3f3-40a6-ab52-8650693969fa', variable: 'SSH_KEY')]) {
                         sh '''
@@ -85,18 +79,17 @@ pipeline {
                         '''
                     }
 
-                    sh '''
-                        deploy_end=$(date +%s)
-                        deploy_time=$((deploy_end - deploy_start))
-                        echo $deploy_time > deploy_time.txt
-                    '''
+                    def deployEnd = System.currentTimeMillis()
+                    def deployTime = (deployEnd - deployStart) / 1000
 
+                    // Write deploy time to a file
+                    sh "echo ${deployTime} > deploy_time.txt"
+
+                    // Read from file into a variable
                     def deployTimeVal = sh(script: 'cat deploy_time.txt', returnStdout: true).trim()
 
-                    // ✅ Use "." instead of "source"
-                    sh '''
-                        . /var/lib/jenkins/mlflow_venv/bin/activate
-                        python /var/lib/jenkins/log_deploy_time.py ''' + deployTimeVal
+                    // Log deploy time to MLflow (Direct Python Path Fix)
+                    sh "/var/lib/jenkins/mlflow_venv/bin/python3 /var/lib/jenkins/log_deploy_time.py ${deployTimeVal}"
                 }
             }
         }
