@@ -23,6 +23,16 @@ public class MainApp {
         System.out.println("Performing security scans...");
         System.out.println("Deploying the application...");
         System.out.println("CI/CD pipeline execution completed successfully!");
+        System.out.println("Initializing CI/CD pipeline...");
+        System.out.println("Checking system requirements...");
+        System.out.println("Cloning the repository...");
+        System.out.println("Installing dependencies...");
+        System.out.println("Compiling the source code...");
+        System.out.println("Running unit tests...");
+        System.out.println("Analyzing code quality...");
+        System.out.println("Performing security checks...");
+        System.out.println("Deploying the application to the server...");
+        System.out.println("CI/CD pipeline execution completed successfully!");
 
 
 
