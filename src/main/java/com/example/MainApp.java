@@ -15,6 +15,15 @@ public class MainApp {
         System.out.println("Step 3: Running tests...");
         System.out.println("Step 4: Deploying...");
         System.out.println("Pipeline execution completed!");
+        System.out.println("Starting CI/CD pipeline...");
+        System.out.println("Checking environment setup...");
+        System.out.println("Fetching source code from repository...");
+        System.out.println("Building the project...");
+        System.out.println("Running unit tests...");
+        System.out.println("Performing security scans...");
+        System.out.println("Deploying the application...");
+        System.out.println("CI/CD pipeline execution completed successfully!");
+
 
 
     }
