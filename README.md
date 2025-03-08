@@ -11,7 +11,7 @@ This project optimizes CI/CD pipelines using Jenkins and MLflow by using machine
 - <b>Python & Java</b> 
 - <b>Jenkins</b>
 - <b>MLflow</b>
-- <b>NumPy & Scikit-Learn/b>
+- <b>NumPy & Scikit-Learn</b>
 - <b>Docker</b>
 - <b>AWS</b>
 - <b>Ubuntu</b>
