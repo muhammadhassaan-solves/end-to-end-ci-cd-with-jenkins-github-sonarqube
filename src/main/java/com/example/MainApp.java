@@ -9,6 +9,13 @@ public class MainApp {
         System.out.println("Building the project...");
         System.out.println("Running tests...");
         System.out.println("Deploying the application...");
+        System.out.println("Welcome to the CI/CD pipeline!");
+        System.out.println("Step 1: Initializing...");
+        System.out.println("Step 2: Building the project...");
+        System.out.println("Step 3: Running tests...");
+        System.out.println("Step 4: Deploying...");
+        System.out.println("Pipeline execution completed!");
+
 
     }
 }
