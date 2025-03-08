@@ -32,7 +32,7 @@ Train a Predictive Model <br/>
 <img src="https://i.imgur.com/ZWocpdI.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Compare Predicted vs. Actual Build Times and Refine the Model. <br/>
+Compare Predicted vs. Actual Build Times and Refine the Model <br/>
 <img src="https://i.imgur.com/H3mfiK9.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
