@@ -5,6 +5,7 @@ public class MainApp {
         System.out.println("Hello, CI/CD Pipeline with Jenkins and MLflow!");
         System.out.println("Hello, CI/CD Pipeline with Jenkins and MLflow!");
         System.out.println("Hello, CI/CD Pipeline with Jenkins and MLflow!");
+        System.out.println("Hello, CI/CD Pipeline with Jenkins and MLflow!");
         
     }
 }
