@@ -5,5 +5,10 @@ public class MainApp {
         System.out.println("Hello, CI/CD Pipeline with Jenkins and MLflow!");
         System.out.println("Starting the CI/CD pipeline...");
         System.out.println("Deploying the application...");
+        System.out.println("Initializing the pipeline...");
+        System.out.println("Building the project...");
+        System.out.println("Running tests...");
+        System.out.println("Deploying the application...");
+
     }
 }
