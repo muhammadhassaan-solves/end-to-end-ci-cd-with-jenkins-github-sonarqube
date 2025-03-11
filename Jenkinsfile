@@ -33,7 +33,7 @@ pipeline {
                     rm -rf ./* .git*
 
                     echo "Cloning repository..."
-                    git clone -b main https://github.com/muhammadhassaan-solves/CI-CD-Pipeline-Optimization-using-Jenkins-and-MLflow.git .
+                    git clone -b main https://github.com/muhammadhassaan-solves/ci-cd-Pipeline-optimization-using-jenkins-mlflow.git .
                 '''
             }
         }
