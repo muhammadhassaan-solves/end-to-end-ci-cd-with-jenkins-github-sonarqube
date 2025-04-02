@@ -2,7 +2,7 @@
 
 
 <h2>Description</h2>
-This project optimizes CI/CD pipelines using Jenkins and MLflow by using machine learning to predict build times based on historical data. By analyzing build trends, automating predictions, and implementing optimizations like parallel and incremental builds, it enhances deployment efficiency and reduces delays.
+This project automates the build and testing of a Java application using Jenkins and GitHub. It uses Maven for builds, SonarQube for code quality checks, and GitHub webhooks for automated triggers.
 <br />
 
 
