@@ -8,36 +8,38 @@ This project optimizes CI/CD pipelines using Jenkins and MLflow by using machine
 
 <h2>Languages and Utilities Used</h2>
 
-- <b>Python & Java</b> 
-- <b>Jenkins</b>
-- <b>MLflow</b>
-- <b>NumPy & Scikit-Learn</b>
-- <b>Docker</b>
-- <b>AWS</b>
-- <b>Ubuntu</b>
+- Java 
+- Jenkins
+- GitHub
+- Maven
+- SonarQube
+- GitHub Webhooks
 
 
 <h2>Project Walk-through</h2>
 
 <p align="center">
-Set Up CI/CD with Jenkins <br />
-<img src="https://i.imgur.com/gdqkBbC.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Set Up Jenkins on AWS EC2 <br />
+<img src="https://i.imgur.com/fMZRo6A.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Gather and Log Build Data <br/>
-<img src="https://i.imgur.com/8rgw8Gt.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Integrate GitHub Repository <br/>
+<img src="https://i.imgur.com/dj9C68N.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Train a Predictive Model <br/>
-<img src="https://i.imgur.com/ZWocpdI.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Define Build Process with Maven <br/>
+<img src="https://i.imgur.com/9aDUEIi.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Compare Predicted vs. Actual Build Times and Refine the Model <br/>
-<img src="https://i.imgur.com/H3mfiK9.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Implement Code Quality Checks with SonarQube <br/>
+<img src="https://i.imgur.com/yDatkK6.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-
+Automate Builds with Webhooks <br/>
+<img src="https://i.imgur.com/ZuKU1fh.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
 </p>
+
 
 <!--
  ```diff
