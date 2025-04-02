@@ -32,7 +32,7 @@ Define Build Process with Maven <br/>
 <br />
 <br />
 Implement Code Quality Checks with SonarQube <br/>
-<img src="https://i.imgur.com/yDatkK6.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/1kvqFH1.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
 Automate Builds with Webhooks <br/>
