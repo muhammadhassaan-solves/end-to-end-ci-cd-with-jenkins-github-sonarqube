@@ -31,13 +31,20 @@ Define Build Process with Maven <br/>
 <img src="https://i.imgur.com/9aDUEIi.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
+Automate Builds with Webhooks <br/>
+<img src="https://i.imgur.com/ZuKU1fh.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
+<br />
 Implement Code Quality Checks with SonarQube <br/>
 <img src="https://i.imgur.com/1kvqFH1.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Automate Builds with Webhooks <br/>
-<img src="https://i.imgur.com/ZuKU1fh.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
+Review Console Output <br/>
+<img src="https://i.imgur.com/Pi6UTuK.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<br />
+
+
 </p>
 
 
