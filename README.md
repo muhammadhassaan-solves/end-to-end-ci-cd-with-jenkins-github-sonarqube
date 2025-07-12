@@ -20,40 +20,30 @@ This project automates the build and testing of a Java application using Jenkins
 
 <p align="center">
 Set Up Jenkins on AWS EC2 <br />
-<img src="https://i.imgur.com/fMZRo6A.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/fMZRo6A.jpeg"/>
 <br />
 <br />
 Integrate GitHub Repository <br/>
-<img src="https://i.imgur.com/dj9C68N.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/dj9C68N.jpeg" />
 <br />
 <br />
 Define Build Process with Maven <br/>
-<img src="https://i.imgur.com/9aDUEIi.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/9aDUEIi.jpeg"/>
 <br />
 <br />
 Automate Builds with Webhooks <br/>
-<img src="https://i.imgur.com/ZuKU1fh.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/ZuKU1fh.jpeg"/>
 <br />
 <br />
 Implement Code Quality Checks with SonarQube <br/>
-<img src="https://i.imgur.com/1kvqFH1.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/1kvqFH1.jpeg"/>
 <br />
 <br />
 <br />
 Review Console Output <br/>
-<img src="https://i.imgur.com/Pi6UTuK.jpeg" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/Pi6UTuK.jpeg" />
 <br />
 
 
 </p>
 
-
-<!--
- ```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
-```
---!>
